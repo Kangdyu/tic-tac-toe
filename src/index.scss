@@ -1,0 +1,150 @@
+@import url("https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap");
+@import "variables.scss";
+
+body {
+  font: 14px "Gaegu", cursive;
+  color: $black;
+  background-color: $background-color;
+}
+
+.game {
+  max-width: 100vw;
+  max-height: 100vh;
+  height: 100vh;
+  padding: 0 50px;
+
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  justify-items: center;
+  align-items: center;
+
+  .game-board {
+    .game-status {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      font-size: 3rem;
+      font-weight: 700;
+    }
+
+    .board-grid {
+      width: fit-content;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(100px, 20vh));
+      grid-template-rows: repeat(3, minmax(100px, 20vh));
+
+      padding: 50px 0;
+
+      .square {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        width: 100%;
+        height: 100%;
+        outline: none;
+        border: none;
+        background-color: transparent;
+        font-size: 7rem;
+        font-weight: 700;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        &:nth-child(1),
+        &:nth-child(2),
+        &:nth-child(3) {
+          border-bottom: $border-board;
+        }
+        &:nth-child(7),
+        &:nth-child(8),
+        &:nth-child(9) {
+          border-top: $border-board;
+        }
+        &:nth-child(1),
+        &:nth-child(4),
+        &:nth-child(7) {
+          border-right: $border-board;
+        }
+        &:nth-child(3),
+        &:nth-child(6),
+        &:nth-child(9) {
+          border-left: $border-board;
+        }
+      }
+    }
+  }
+
+  .game-info {
+    width: 100%;
+    height: 100%;
+
+    .game-history-list {
+      height: 100%;
+      display: grid;
+      grid-template-rows: repeat(10, 1fr);
+      gap: 20px;
+      justify-items: center;
+      padding: 50px 0;
+      box-sizing: border-box;
+
+      .game-history {
+        width: 70%;
+
+        button {
+          width: 100%;
+          height: 100%;
+          outline: none;
+          border: none;
+          border-radius: 100px;
+          background-color: $main-color-1;
+          font-family: inherit;
+          font-size: 1.5rem;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 800px) {
+  .game {
+    grid-template-columns: none;
+    grid-template-rows: 2fr 1fr;
+    justify-items: center;
+    align-items: center;
+
+    padding: 0 20px;
+
+    .game-board {
+      .game-status {
+        font-size: 2.5rem;
+      }
+      .board-grid {
+        grid-template-columns: repeat(3, minmax(50px, 20vw));
+        grid-template-rows: repeat(3, minmax(50px, 20vw));
+        justify-items: center;
+        align-items: center;
+
+        .square {
+          width: 100%;
+          height: 100%;
+          font-size: 3.5rem;
+        }
+      }
+    }
+
+    .game-info {
+      .game-history-list {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        grid-auto-rows: 1fr;
+
+        padding-top: 0;
+      }
+    }
+  }
+}
