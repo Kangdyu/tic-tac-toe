@@ -50,7 +50,7 @@ body {
         font-size: 7rem;
         font-weight: 700;
 
-        &:hover {
+        &:not(.selected):hover {
           background-color: rgba(0, 0, 0, 0.05);
         }
 
@@ -73,6 +73,10 @@ body {
         &:nth-child(6),
         &:nth-child(9) {
           border-left: $border-board;
+        }
+
+        &.end-square {
+          background-color: $main-color-1;
         }
       }
     }
@@ -104,6 +108,10 @@ body {
           font-family: inherit;
           font-size: 1.5rem;
           font-weight: 700;
+        }
+
+        &.now button {
+          border: 5px solid $main-color-2;
         }
       }
     }
