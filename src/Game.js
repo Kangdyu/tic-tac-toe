@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Board from "./Board";
 
 function calculateWinner(squares) {
@@ -15,101 +15,93 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return { winner: squares[a], line: lines[i] };
+      return { winner: squares[a], endLine: lines[i] };
     }
   }
-  return { winner: null, line: null };
+  return { winner: null, endLine: null };
 }
 
-class Game extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      history: [
-        {
-          squares: Array(9).fill(null),
-        },
-      ],
-      stepNumber: 0,
-      isTurnX: true,
+function Game() {
+  const [history, setHistory] = useState([
+    {
+      squares: Array(9).fill(null),
       isGameEnd: false,
-    };
-  }
+      winner: null,
+      endLine: null,
+    },
+  ]);
+  const [current, setCurrent] = useState(history[0]);
+  const [stepNumber, setStepNumber] = useState(0);
+  const [isTurnX, setIsTurnX] = useState(true);
 
-  handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
-    const current = history[history.length - 1];
+  const jumpTo = (move) => {
+    setStepNumber(move);
+    setCurrent(history[move]);
+    setIsTurnX(move % 2 === 0);
+  };
+
+  const handleClick = (i) => {
+    const prevMoves = history.slice(0, stepNumber + 1);
+    const current = prevMoves[prevMoves.length - 1];
     const squares = current.squares.slice();
 
     if (current.isGameEnd || squares[i]) {
       return;
     }
 
-    squares[i] = this.state.isTurnX ? "X" : "O";
+    squares[i] = isTurnX ? "X" : "O";
 
-    const { winner, line } = calculateWinner(squares);
-    let history_new = { squares, winner, endLine: line };
-    if (winner || history.length + 1 === 10) {
-      history_new.isGameEnd = true;
+    const { winner, endLine } = calculateWinner(squares);
+    let newMove = { squares, winner, endLine };
+    if (winner || prevMoves.length + 1 === 10) {
+      newMove.isGameEnd = true;
     } else {
-      history_new.isGameEnd = false;
+      newMove.isGameEnd = false;
     }
-    this.setState({
-      history: history.concat([history_new]),
-      stepNumber: history.length,
-      isTurnX: !this.state.isTurnX,
-    });
-  }
 
-  jumpTo(step) {
-    this.setState({
-      stepNumber: step,
-      isTurnX: step % 2 === 0,
-    });
-  }
+    setHistory(prevMoves.concat([newMove]));
+    setCurrent(newMove);
+    setStepNumber(prevMoves.length);
+    setIsTurnX(!isTurnX);
+  };
 
-  render() {
-    const history = this.state.history;
-    const current = history[this.state.stepNumber];
-
-    const moves = history.map((step, move) => {
-      const desc = `#${move}`;
-      const name =
-        move === this.state.stepNumber ? "game-history now" : "game-history";
-      return (
-        <li key={move} className={name}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
-        </li>
-      );
-    });
-
-    let status;
-    if (current.isGameEnd) {
-      if (current.winner) {
-        status = `Winner: ${current.winner}`;
-      } else {
-        status = "Draw!";
-      }
-    } else {
-      status = `Next player: ${this.state.isTurnX ? "X" : "O"}`;
-    }
+  const moves = history.map((_, move) => {
+    const desc = `#${move}`;
+    const name = move === stepNumber ? "game-history now" : "game-history";
 
     return (
-      <div className="game">
-        <div className="game-board">
-          <div className="game-status">{status}</div>
-          <Board
-            squares={current.squares}
-            endSquares={current.endLine}
-            onClick={(i) => this.handleClick(i)}
-          />
-        </div>
-        <div className="game-info">
-          <ol className="game-history-list">{moves}</ol>
-        </div>
-      </div>
+      <li key={move} className={name}>
+        <button onClick={() => jumpTo(move)}>{desc}</button>
+      </li>
     );
+  });
+
+  let status;
+  if (current.isGameEnd) {
+    if (current.winner) {
+      status = `Winner: ${current.winner}`;
+    } else {
+      status = "Draw!";
+    }
+  } else {
+    status = `Next player: ${isTurnX ? "X" : "O"}`;
   }
+
+  return (
+    <div className="game">
+      <div className="game-board">
+        <div className="game-status">{status}</div>
+        <Board
+          squares={current.squares}
+          endSquares={current.endLine}
+          onClick={(i) => handleClick(i)}
+        />
+      </div>
+      <div className="game-info">
+        <ol className="game-history-list">{moves}</ol>
+      </div>
+    </div>
+  );
 }
 
 export default Game;

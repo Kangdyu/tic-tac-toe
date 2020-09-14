@@ -1,12 +1,12 @@
 import React from "react";
 
-function Square(props) {
+function Square({ isResultSquare, value, onClick }) {
   let name = "square";
-  name += props.isResultSquare ? " end-square" : "";
-  name += props.value ? " selected" : "";
+  name += isResultSquare ? " end-square" : "";
+  name += value ? " selected" : "";
   return (
-    <button className={name} onClick={props.onClick}>
-      {props.value}
+    <button className={name} onClick={onClick}>
+      {value}
     </button>
   );
 }

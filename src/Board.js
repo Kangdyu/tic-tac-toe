@@ -1,25 +1,23 @@
 import React from "react";
 import Square from "./Square";
 
-class Board extends React.Component {
-  renderSquare(i) {
+function Board({ squares, endSquares, onClick }) {
+  const renderSquare = (i) => {
     return (
       <Square
         key={i}
-        value={this.props.squares[i]}
-        isResultSquare={this.props.endSquares?.includes(i)}
-        onClick={() => this.props.onClick(i)}
+        value={squares[i]}
+        isResultSquare={endSquares?.includes(i)}
+        onClick={() => onClick(i)}
       />
     );
-  }
+  };
 
-  render() {
-    const squares = Array(9)
-      .fill(null)
-      .map((_, index) => this.renderSquare(index));
+  const squareComponents = Array(9)
+    .fill(null)
+    .map((_, index) => renderSquare(index));
 
-    return <div className="board-grid">{squares}</div>;
-  }
+  return <div className="board-grid">{squareComponents}</div>;
 }
 
 export default Board;
